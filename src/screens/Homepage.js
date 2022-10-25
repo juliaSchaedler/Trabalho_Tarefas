@@ -79,69 +79,32 @@ export default function Homepage() {
         }
     }
 
-    // A function that set the value of isSelected based on the state of the checkbox
-    /*function setIsSelected(index, value) {
-        let data = []
-
-        // Making a deep copy of the list array
-        for (let i = 0; i < list.length; i++) {
-            if (index === i) {
-                data.push({ ...list[i], isSelected: value }) // Updating the object at position i === index
-            } else {
-                data.push(list[i])
-            }
+    const delet = (Task)=>{
+        //console.log(`Delet Task -> ${Task}`)
+        if(task.includes(Task)){
+            let index = task.indexOf(Task)
+            task.splice(index)
+            setTimeout(()=>{
+                setValue('.')
+                setValue('')
+            },0)
         }
-
-        setList(data) // Setting the new state
-    }/*
-
-    // A function that delete an item at position idx from the list array
-    /*function deleteItem(idx) {
-        Alert.alert(
-            "Deletar tarefa",
-            "Você tem certeza que quer deletar esta tarefa?",
-            [
-                {
-                    text: "Cancelar",
-                    style: "cancel"
-                },
-                {
-                    text: "Sim", onPress: () => {
-                        const data = list.filter((item, index) => index !== idx)
-                        setList(data)
-                    }
-                }
-            ])
-    }*/
-
+    }
     
     return <View style={styles.container}>
         <Text style={{ ...FONTS.h1_semiBold, color: COLORS.secondary, marginBottom: 15, marginTop: 35 }}>O que precisa ser feito?</Text>
-        {/* <FlatList style={{ flex: 1 }} }
-            data={list}
-            renderItem={({ item, index }) => <Card data={item} index={index} setIsSelected={setIsSelected} deleteItem={deleteItem} />}
-            keyExtractor={(item, index) => index.toString()}
-/>*/}
-
         <View style={styles.textBoxWrapper}>
-            {/* <TextInput
-                style={styles.textInput}
-                placeholder="Nova tarefa"
-                placeholderTextColor={COLORS.primary}
-                onChangeText={setValue}
-                value={value} /> */}
-
-                <TextInput style={styles.textInput} value={value} onChangeText={setValue}></TextInput>
-                
+            <TextInput style={styles.textInput} value={value} onChangeText={setValue}></TextInput>
             <TouchableOpacity
                 style={styles.btn}
                 onPress={addText}>
-                
+
                 <Text style={{ fontSize: 40, color: COLORS.secondary  }}>+</Text>
             </TouchableOpacity>
         </View>
-        {task && task.length>0 ? task.map(Task => <Text key={Task}>{Task}</Text>): <Text>lista igual nulo</Text>}
-
-        
+        {task && task.length>0 ? task.map(Task => 
+            <Text style={{ ...FONTS.h2_semiBold, color: COLORS.primary, marginBottom: 10, marginTop: 35, backgroundColor: COLORS.secondary, borderRadius: 8, padding: 5}} key={Task} onPress={()=> delet(Task)} >{Task}</Text>)
+            : 
+            <Text style={{ ...FONTS.h2_semiBold, color: COLORS.primary, marginBottom: 20, marginTop: 35, backgroundColor: COLORS.secondary, borderRadius: 8, padding: 5}}>Adicione sua primeira tarefa</Text>}
     </View>
 }
