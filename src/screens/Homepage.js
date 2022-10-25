@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, StatusBar, Platform, TextInput, TouchableOpacity, FlatList, Alert } from "react-native"
 import Card  from "../components"
 import { COLORS, SIZES, FONTS, SHADOW } from "../constants"
+import Task from './Task';
 
 const styles = StyleSheet.create({
     container: {
@@ -45,13 +46,14 @@ const styles = StyleSheet.create({
 export default function Homepage() {
 
     //State variables
-    const [list, setList] = useState([])
+    //const [list, setList] = useState([])
     const [value, setValue] = useState("")
+    let task = Task
 
-    let Lista = new Array ()
+    //let Lista = ["qualquer coisa"]
 
     // A function that add data to the list array
-    const addText=() => {
+    const addText= async() => {
         //if (value !== "") {
            /* setList(prev => {
                 return [
@@ -59,16 +61,26 @@ export default function Homepage() {
                     { text: text, isSelected: false } // Adding a JS Object
                 ]
             })*/
-            Lista.pop(value)
-            setValue("")
-            console.log(Lista)
+            //Lista.push(value)
+            //setValue("")
+           // console.log(Lista)
         //} else {
            // alert("Descreva a tarefa!")
         //}
+        try {
+            if(value !== ""){
+                task.push(value)
+                setValue("")
+                console.log(task)
+            }
+        } catch (error) {
+            console.log(error)          
+                 
+        }
     }
 
     // A function that set the value of isSelected based on the state of the checkbox
-    function setIsSelected(index, value) {
+    /*function setIsSelected(index, value) {
         let data = []
 
         // Making a deep copy of the list array
@@ -81,10 +93,10 @@ export default function Homepage() {
         }
 
         setList(data) // Setting the new state
-    }
+    }/*
 
     // A function that delete an item at position idx from the list array
-    function deleteItem(idx) {
+    /*function deleteItem(idx) {
         Alert.alert(
             "Deletar tarefa",
             "Você tem certeza que quer deletar esta tarefa?",
@@ -100,25 +112,27 @@ export default function Homepage() {
                     }
                 }
             ])
-    }
+    }*/
 
-    useEffect(()=>{Lista && Lista.length>0 ? Lista.map(Task => <Text>{Task}</Text>): <Text>lista igual nulo</Text> },[Lista])
+    
     return <View style={styles.container}>
         <Text style={{ ...FONTS.h1_semiBold, color: COLORS.secondary, marginBottom: 15, marginTop: 35 }}>O que precisa ser feito?</Text>
-        <FlatList style={{ flex: 1 }}
+        {/* <FlatList style={{ flex: 1 }} }
             data={list}
             renderItem={({ item, index }) => <Card data={item} index={index} setIsSelected={setIsSelected} deleteItem={deleteItem} />}
             keyExtractor={(item, index) => index.toString()}
-        />
+/>*/}
 
         <View style={styles.textBoxWrapper}>
-            <TextInput
+            {/* <TextInput
                 style={styles.textInput}
                 placeholder="Nova tarefa"
                 placeholderTextColor={COLORS.primary}
                 onChangeText={setValue}
-                value={value} />
-                <Text>{value}</Text>
+                value={value} /> */}
+
+                <TextInput style={styles.textInput} value={value} onChangeText={setValue}></TextInput>
+                
             <TouchableOpacity
                 style={styles.btn}
                 onPress={addText}>
@@ -126,6 +140,8 @@ export default function Homepage() {
                 <Text style={{ fontSize: 40, color: COLORS.secondary  }}>+</Text>
             </TouchableOpacity>
         </View>
+        {task && task.length>0 ? task.map(Task => <Text key={Task}>{Task}</Text>): <Text>lista igual nulo</Text>}
+
         
     </View>
 }
