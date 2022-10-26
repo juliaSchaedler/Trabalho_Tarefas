@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, StatusBar, Platform, TextInput, TouchableOpacity, FlatList, Alert } from "react-native"
 import Card  from "../components"
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { COLORS, SIZES, FONTS, SHADOW } from "../constants"
 import Task from './Task';
 
@@ -48,9 +49,11 @@ export default function Homepage() {
     //State variables
     //const [list, setList] = useState([])
     const [value, setValue] = useState("")
-    let task = Task
-
+    let task    = Task
+    let resgata = []
     //let Lista = ["qualquer coisa"]
+    //CARREGANDO OS DADOS ASYNC STORAGE
+    getData
 
     // A function that add data to the list array
     const addText= async() => {
@@ -73,12 +76,24 @@ export default function Homepage() {
                 setValue("")
                 console.log(task)
             }
+            const jsonValue = JSON.stringify(task)
+            await AsyncStorage.setItem('@storage_Key', jsonValue)
         } catch (error) {
-            console.log(error)          
-                 
+            console.log(error)
         }
     }
 
+
+    const getData = async () => {
+        try {
+            const jsonValue = await AsyncStorage.getItem('@storage_Key')
+            resgata = jsonValue != null ? JSON.parse(jsonValue) : null;
+            return resgata
+        } catch(e) {
+        // error reading value
+        }
+    }
+  
     const delet = (Task)=>{
         //console.log(`Delet Task -> ${Task}`)
         if(task.includes(Task)){
@@ -90,7 +105,7 @@ export default function Homepage() {
             },0)
         }
     }
-    
+       
     return <View style={styles.container}>
         <Text style={{ ...FONTS.h1_semiBold, color: COLORS.secondary, marginBottom: 15, marginTop: 35 }}>O que precisa ser feito?</Text>
         <View style={styles.textBoxWrapper}>
@@ -102,9 +117,9 @@ export default function Homepage() {
                 <Text style={{ fontSize: 40, color: COLORS.secondary  }}>+</Text>
             </TouchableOpacity>
         </View>
-        {task && task.length>0 ? task.map(Task => 
+        {resgata && resgata.length>0 ? resgata.map(Task => 
             <Text style={{ ...FONTS.h2_semiBold, color: COLORS.primary, marginBottom: 10, marginTop: 35, backgroundColor: COLORS.secondary, borderRadius: 8, padding: 5}} key={Task} onPress={()=> delet(Task)} >{Task}</Text>)
             : 
-            <Text style={{ ...FONTS.h2_semiBold, color: COLORS.primary, marginBottom: 20, marginTop: 35, backgroundColor: COLORS.secondary, borderRadius: 8, padding: 5}}>Adicione sua primeira tarefa</Text>}
+            <Text style={{ ...FONTS.h2_semiBold, color: COLORS.primary, marginBottom: 20, marginTop: 35, backgroundColor: COLORS.secondary, borderRadius: 8, padding: 5}}>Nenhuma task cadastrada ou resgatada</Text>}
     </View>
 }
